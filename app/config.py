@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 120
     
     # CORS - Se parseará automáticamente desde el .env
-    cors_origins: str = '["http://localhost:3000", "http://localhost:5173", "https://clientnotas-production.up.railway.app"]'
+    cors_origins: str = '["http://localhost:3000", "http://localhost:5173", "https://clientnotas-production.up.railway.app", "http://client-notas.vercel.app"]'
     
     # Email
     smtp_server: str = "smtp.gmail.com"
@@ -33,7 +33,7 @@ class Settings(BaseSettings):
                 return json.loads(self.cors_origins)
             return self.cors_origins
         except (json.JSONDecodeError, TypeError):
-            return ["http://localhost:3000", "http://localhost:5173"]
+            return ["http://localhost:3000", "http://localhost:5173", "https://clientnotas-production.up.railway.app", "http://client-notas.vercel.app"]
     
     class Config:
         env_file = ".env"
