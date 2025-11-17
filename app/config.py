@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 120
     
     # CORS - Se parseará automáticamente desde el .env
-    cors_origins: str = '["http://localhost:3000", "http://localhost:5173"]'
+    cors_origins: str = '["http://localhost:3000", "http://localhost:5173", "https://clientnotas-production.up.railway.app"]'
     
     # Email
     smtp_server: str = "smtp.gmail.com"
