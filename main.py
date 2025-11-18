@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse, Response
 import os
 from app.config import settings
 from app.database import engine, Base
-from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 # Importar todos los routers de los módulos
 from app.modules.auth.routes import router as auth_router

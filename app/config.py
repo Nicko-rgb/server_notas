@@ -6,7 +6,7 @@ import json
 class Settings(BaseSettings):
     # Base de datos - PostgreSQL
     # Usa DATABASE_URL del archivo .env, con fallback por defecto
-    database_url: str = "postgresql://postgres:zRzjDWrSWiJMZBBqcbhoZZVnrKCemrKG@yamanote.proxy.rlwy.net:31718/railway"
+    database_url: str = "postgresql+psycopg://postgres:zRzjDWrSWiJMZBBqcbhoZZVnrKCemrKG@yamanote.proxy.rlwy.net:31718/railway"
     # JWT
     # Usa SECRET_KEY del archivo .env, con fallback por defecto
     secret_key: str = "fallback_secret_key_change_in_production"
