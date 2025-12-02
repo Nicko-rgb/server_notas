@@ -1,131 +1,88 @@
 
 
-# 🎓 Sistema de Notas Académico
+# 🎓 Sistema de Notas – Backend (FastAPI)
 
-Sistema modular para gestión de notas académicas con roles diferenciados (Administrador, Docente, Estudiante).
+API del Sistema de Notas Académico con módulos `Admin`, `Docente` y `Estudiante`.
 
-## 🛠️ Requisitos Previos
+## Requisitos
 
-Antes de comenzar, asegúrate de tener instalado:
+- `Python >= 3.10`
+- `PostgreSQL >= 12`
 
-- **Python 3.8+**
-- **Node.js 16+** y **npm**
-- **PostgreSQL 12+**
-- **Git**
+## Instalación local
 
-## ⚙️ Configuración del Backend
+- Crear entorno: `python -m venv .venv && .venv\Scripts\activate`
+- Instalar dependencias: `pip install -r requirements.txt`
+- Crear BD y credenciales en PostgreSQL.
 
-### 1. Crear y activar entorno virtual
+## Variables de entorno
 
-```bash
-# Windows
-python -m venv venv
-venv\Scripts\activate
-```
-
-### 2. Instalar dependencias
-
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Configurar base de datos PostgreSQL
-
-1. **Crear la base de datos:**
-   ```sql
-   CREATE DATABASE sistema_notas;
-   ```
-
-### 4. Configurar variables de entorno
-
-1. **Copiar el archivo de ejemplo:**
-   ```bash
-   cp .env.example .env
-   ```
-
-2. **Editar el archivo `.env` con tus credenciales locales:**
-   ```env
-   # Configuración de la base de datos
-   # Cambia 'usuario' y 'password' por tus credenciales locales de PostgreSQL
-   DATABASE_URL=postgresql://tu_usuario:tu_password@localhost:5432/sistema_notas
-
-   # Configuración JWT
-   # Cambia por una clave secreta única para tu entorno
-   SECRET_KEY=tu_clave_secreta_muy_segura_aqui
-   ALGORITHM=HS256
-   ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-   # Configuración de CORS - URLs permitidas para el frontend
-   CORS_ORIGINS=["http://localhost:3000","http://localhost:5173"]
-
-   # Configuración de correo (para recuperación de contraseñas)
-   SMTP_SERVER=smtp.gmail.com
-   SMTP_PORT=587
-   SMTP_USERNAME=tu_email@gmail.com
-   SMTP_PASSWORD=tu_password_de_aplicacion
-
-   # Configuración general
-   DEBUG=True
-   ```
-
-### 5. Ejecutar migraciones y poblar la base de datos
-
-```bash
-# Ejecutar el seeder para crear datos de prueba
-python seeder.py
-```
-
-### 6. Iniciar el servidor
-
-```bash
-uvicorn main:app --host 0.0.0.0 --port 9001 --reload
-```
-
-El servidor estará disponible en: **http://localhost:9001**
-
-## 📊 Documentación de la API
-
-Una vez que el servidor esté ejecutándose, puedes acceder a la documentación interactiva:
-
-- **Swagger UI:** http://localhost:9001/docs
-- **ReDoc:** http://localhost:9001/redoc
-
-## 📁 Estructura del Proyecto
+Editar `.env`:
 
 ```
-notas_jhon/
-├── backendSistNotas/          # API Backend (FastAPI)
-│   ├── app/
-│   │   ├── modules/           # Módulos por rol
-│   │   │   ├── auth/         # Autenticación
-│   │   │   ├── admin/        # Funcionalidades de admin
-│   │   │   ├── teacher/      # Funcionalidades de docente
-│   │   │   └── student/      # Funcionalidades de estudiante
-│   │   ├── shared/           # Modelos y utilidades compartidas
-│   │   ├── config.py         # Configuración
-│   │   └── database.py       # Conexión a BD
-│   ├── main.py              # Punto de entrada
-│   ├── seeder.py            # Datos de prueba
-│   └── requirements.txt     # Dependencias Python
-└── sistemaDeNotas/          # Frontend (React + Vite)
-    ├── src/
-    │   ├── components/      # Componentes reutilizables
-    │   ├── pages/          # Páginas por rol
-    │   ├── services/       # Servicios API
-    │   └── store/          # Estado global (Zustand)
-    └── package.json        # Dependencias Node.js
+# Base de datos
+DATABASE_URL=postgresql+psycopg://usuario:password@localhost:5432/sistema_notas
+
+# JWT
+SECRET_KEY=tu_clave_secreta
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=120
+
+# CORS (incluye dominios del frontend en https)
+CORS_ORIGINS=["http://localhost:5173","https://clientnotas-production.up.railway.app"]
+
+# Email (recuperación de contraseña)
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=tu_email
+SMTP_PASSWORD=tu_password_aplicacion
+
+# Proxy (recomendado en producción)
+FORWARDED_ALLOW_IPS=*
 ```
 
-## 👥 Trabajo en Equipo
+## Ejecutar en desarrollo
 
-1. **Cada desarrollador debe:**
-   - Copiar `.env.example` a `.env`
-   - Configurar sus propias credenciales de base de datos
-   - No subir el archivo `.env` al repositorio
+- `uvicorn main:app --host 0.0.0.0 --port 9001 --reload`
+- Docs: `http://localhost:9001/docs` y `http://localhost:9001/redoc`
 
-2. **Para nuevas funcionalidades:**
-   - Crear rama desde `main`
-   - Seguir la estructura modular existente
-   - Actualizar este README si es necesario
+## Estructura
 
----
+- `app/modules/admin`: Gestión de docentes, estudiantes, matrículas, cursos/ciclos y reportes.
+- `app/modules/teacher`: Cursos, calificaciones, perfil y reportes del docente.
+- `app/modules/student`: Dashboard, cursos, notas, perfil y horario del estudiante.
+- `app/shared`: Modelos compartidos y utilidades.
+- `main.py`: Carga de routers, CORS y `ProxyHeadersMiddleware`.
+- `static/`: Archivos estáticos servidos en `/static`.
+
+## Prefijos y endpoints
+
+- Prefijo global: `/api/v1`.
+- `Admin`: `/api/v1/admin/...`
+- `Teacher`: `/api/v1/teacher/...`
+- `Student`: `/api/v1/student/...`
+- `Auth`: `/api/v1/auth/...`
+
+Las rutas de lista usan `"/"` (p. ej. `/api/v1/admin/docentes/`). Consumirlas con `slash` final evita `307`.
+
+## Despliegue en Railway
+
+- `railway.json` inicia con: `uvicorn main:app --host 0.0.0.0 --port $PORT --proxy-headers`.
+- Añadir `FORWARDED_ALLOW_IPS=*` para que Starlette confíe en headers del proxy.
+- Asegurar `CORS_ORIGINS` que incluya el origen del frontend en `https`.
+
+## HTTPS y Mixed Content
+
+- El backend ahora añade `ProxyHeadersMiddleware` y se inicia con `--proxy-headers` para construir redirects en `https` detrás del proxy.
+- El frontend debe usar `VITE_API_URL` en `https`. Si se usa `http`, el navegador bloquea las peticiones.
+
+## Datos de prueba
+
+- `python seeder.py` para crear datos iniciales.
+
+## Solución de problemas
+
+- `307 Temporary Redirect`: usa rutas con `slash` final en el cliente o valida que los redirects apunten a `https`.
+- `Mixed Content`: verifica `VITE_API_URL` en `https` y configuración de proxy.
+- `CORS`: agrega el origen del frontend en `CORS_ORIGINS`.
+- `DB`: confirma `DATABASE_URL` y conectividad.
